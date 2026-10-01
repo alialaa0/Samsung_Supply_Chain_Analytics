@@ -1,12 +1,12 @@
-# Samsung Supply Chain Analytics
+# 📊 Samsung Supply Chain Analytics
 
 A Power BI dashboard for analyzing Samsung's supply chain across **procurement, suppliers, manufacturing, inventory, logistics, sales, customers, and profitability**.
 
-The project combines **Power BI, DAX, and Figma** to build an interactive analytical report from a multi-fact data model.
+Built with **Power BI, DAX, and Figma** to turn supply-chain data into an interactive business analysis.
 
 ---
 
-## Dashboard Preview
+## 📸 Dashboard
 
 ### 01 — Intro
 
@@ -42,7 +42,7 @@ The project combines **Power BI, DAX, and Figma** to build an interactive analyt
 
 ---
 
-## Project Overview
+## 🎯 Project Overview
 
 The dashboard follows the main supply-chain flow:
 
@@ -64,11 +64,11 @@ Sales
 Profitability
 ```
 
-The goal is to provide one place to monitor operational and financial performance and then drill into the areas behind the results.
+The main objective is to provide a single view of operational and financial performance while allowing deeper analysis by supplier, facility, product, customer, country, and channel.
 
 ---
 
-## What I Analyzed
+## 🔎 Analysis Areas
 
 ### Supplier & Procurement
 
@@ -95,7 +95,7 @@ The goal is to provide one place to monitor operational and financial performanc
 * Lead time
 * Logistics cost
 * Shipment status
-* Facility and carrier performance
+* Facility and carrier analysis
 
 ### Sales & Customers
 
@@ -106,11 +106,11 @@ The goal is to provide one place to monitor operational and financial performanc
 * Quantity sold
 * Orders
 * Discounts
-* Customer, country, channel, and product performance
+* Customer, country, channel, and product analysis
 
 ---
 
-## Data Model
+## 🧩 Data Model
 
 The Power BI model uses a **Galaxy Schema / Constellation Schema** with shared dimensions and multiple fact tables.
 
@@ -124,7 +124,7 @@ dim_date
 dim_facility
 ```
 
-### Facts
+### Fact Tables
 
 ```text
 fact_sales
@@ -134,13 +134,13 @@ fact_procurement
 fact_shipment
 ```
 
-The shared dimensions allow the different business processes to be analyzed consistently.
+Shared dimensions allow the different business processes to be analyzed consistently across the report.
 
 ---
 
-## DAX & KPIs
+## 📐 DAX & KPIs
 
-The report uses reusable DAX measures for the main business KPIs, including:
+The dashboard uses reusable DAX measures for the main business KPIs:
 
 ```text
 Total Revenue
@@ -149,14 +149,19 @@ Profit Margin
 Total Cost
 Total Quantity Sold
 Total Orders
+
 Procurement Quantity
 Procurement Cost
 Average Lead Time
+
 Production Quantity
+
 Current Stock
 Safety Stock
+Reorder Point
 Stock Buffer
 Stock vs Safety %
+
 Total Shipments
 Delivered Shipments
 On-Time Delivery %
@@ -164,23 +169,23 @@ Logistics Cost
 Quantity Shipped
 ```
 
-DAX documentation is available in:
+Detailed measure documentation:
 
-[`PowerBI/DAX/Measures.md`](PowerBI/DAX/Measures.md)
-
----
-
-## Tools
-
-| Tool         | Purpose                                   |
-| ------------ | ----------------------------------------- |
-| **Power BI** | Data modeling, DAX, dashboard development |
-| **DAX**      | KPI and analytical calculations           |
-| **Figma**    | Dashboard design and visual layout        |
+➡️ [`PowerBI/DAX/Measures.md`](PowerBI/DAX/Measures.md)
 
 ---
 
-## Repository Structure
+## 🛠️ Tools
+
+| Tool            | Purpose                                   |
+| --------------- | ----------------------------------------- |
+| 📊 **Power BI** | Data modeling, DAX, dashboard development |
+| 🧮 **DAX**      | KPI and analytical calculations           |
+| 🎨 **Figma**    | Dashboard design and visual layout        |
+
+---
+
+## 📁 Repository Structure
 
 ```text
 Samsung_Supply_Chain_Analytics/
@@ -212,19 +217,29 @@ Samsung_Supply_Chain_Analytics/
 
 ---
 
-## Documentation
+## 📚 Documentation
 
-* [Business Overview](Documentation/Business_Overview.md)
-* [KPIs](Documentation/KPIs.md)
-* [Insights](Documentation/Insights.md)
-* [Data Model](Data_Model/Data_Model.md)
-* [Relationships](Data_Model/Relationships.md)
-* [DAX Measures](PowerBI/DAX/Measures.md)
+| Document                                                | Description                        |
+| ------------------------------------------------------- | ---------------------------------- |
+| [Business Overview](Documentation/Business_Overview.md) | Project scope and business context |
+| [KPIs](Documentation/KPIs.md)                           | KPI definitions and usage          |
+| [Insights](Documentation/Insights.md)                   | Dashboard analysis                 |
+| [Data Model](Data_Model/Data_Model.md)                  | Model structure                    |
+| [Relationships](Data_Model/Relationships.md)            | Table relationships                |
+| [DAX Measures](PowerBI/DAX/Measures.md)                 | Main DAX measures                  |
 
 ---
 
-## Project Focus
+## 🚀 Project Focus
 
-This project focuses on turning supply-chain data into a **clear, interactive business analysis** by combining data modeling, DAX measures, KPI design, and dashboard storytelling.
+This project focuses on combining:
 
-**Built with Power BI • DAX • Figma**
+**Data Modeling → DAX → KPI Design → Visualization → Business Analysis**
+
+The goal is to turn supply-chain data into a clear and interactive dashboard that supports both high-level monitoring and detailed analysis.
+
+---
+
+### Built with
+
+**Power BI · DAX · Figma**
