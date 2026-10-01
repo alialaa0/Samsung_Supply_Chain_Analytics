@@ -1,281 +1,343 @@
-# 📊 Data Model
+# Data Model
 
 ## Overview
 
-The Power BI semantic model follows a **Galaxy Schema (Constellation Schema)**.
+The project uses a **Galaxy Schema / Constellation Schema** because the model contains multiple fact tables that share common dimensions.
 
-The model contains multiple fact tables that share common dimension tables. This structure supports analysis across different supply chain business processes while maintaining consistent dimensions.
+The model is designed to analyze different supply-chain processes while keeping the dimensions reusable across the report.
+
+```text
+                    dim_customer
+                         │
+                    ┌────┴────┐
+                    │         │
+dim_supplier ───────┤         │
+                    │         │
+dim_product ────────┤  FACTS  │
+                    │         │
+dim_date ───────────┤         │
+                    │         │
+dim_facility ───────┘         │
+                              │
+             ┌────────────────┼────────────────┐
+             │        │       │       │        │
+             ▼        ▼       ▼       ▼        ▼
+          Sales   Inventory Production Procurement Shipment
+```
 
 ---
 
-## 🧩 Dimension Tables
+## Dimension Tables
 
 ### `dim_customer`
 
-Contains customer-related information:
+Contains customer information used for customer and sales analysis.
 
-- Customer ID
-- Customer Name
-- Country
-- Channel Type
-- Customer Size
-- Annual Volume
+Main attributes include:
+
+```text
+customer_id
+customer_name
+country
+channel_type
+customer_size
+annual_volume
+```
+
+---
 
 ### `dim_supplier`
 
-Contains supplier-related information:
+Contains supplier information used for procurement analysis.
 
-- Supplier ID
-- Supplier Name
-- Country
-- City
-- Tier
-- Specialty
-- Average Quality Score
+Main attributes include:
+
+```text
+supplier_id
+supplier_name
+country
+city
+tier
+specialty
+average_quality_score
+```
+
+---
 
 ### `dim_product`
 
-Contains product-related information:
+Contains product information shared across the different business processes.
 
-- Product ID
-- Product Name
-- Category
-- Product Line
-- Color
-- Specification
-- Unit Cost
-- Unit Price
-- Weight
+Main attributes include:
+
+```text
+product_id
+product_name
+category
+product_line
+color
+specification
+unit_cost
+unit_price
+weight
+```
+
+---
 
 ### `dim_date`
 
-Provides the calendar structure used for time-based analysis.
+The common calendar dimension used for time-based analysis.
 
-Includes:
+Main attributes include:
 
-- Date
-- Date Key
-- Day
-- Day Name
-- Day of Week
-- Month
-- Month Name
-- Quarter
-- Year
-- Weekend Indicator
+```text
+date_key
+date
+day
+day_name
+day_of_week
+month
+month_name
+quarter
+year
+weekend_indicator
+```
+
+---
 
 ### `dim_facility`
 
-Contains facility-related information:
+Contains facility information used across manufacturing, inventory, and shipment analysis.
 
-- Facility ID
-- Facility Name
-- Facility Type
-- Country
-- City
-- Specialization
-- Annual Capacity
-
----
-
-## 📦 Fact Tables
-
-### `fact_sales`
-
-Stores sales transactions:
-
-- Sales ID
-- Order Number
-- Customer ID
-- Product ID
-- Date Key
-- Quantity Sold
-- Unit Price
-- Gross Revenue
-- Discount
-- Total Cost
-- Profit
-- Profit Margin
-
-### `fact_inventory`
-
-Stores inventory information:
-
-- Inventory ID
-- Date Key
-- Facility ID
-- Product ID
-- Stock Level
-- Safety Stock Level
-- Reorder Point
-
-### `fact_production`
-
-Stores production records:
-
-- Production ID
-- Batch Number
-- Date Key
-- Facility ID
-- Product ID
-- Quantity Produced
-- Defective Units
-- Defect Rate
-
-### `fact_procurement`
-
-Stores procurement transactions:
-
-- Procurement ID
-- Purchase Order Number
-- Supplier ID
-- Product ID
-- Order Date Key
-- Delivery Date Key
-- Order Quantity
-- Unit Cost
-- Total Cost
-- Lead Time Days
-- Quality Score
-
-### `fact_shipment`
-
-Stores shipment and logistics information:
-
-- Shipment ID
-- Customer ID
-- Product ID
-- Facility ID
-- Ship Date Key
-- Delivery Date Key
-- Quantity
-- Shipping Cost
-- Status
-- Carrier
-- Delay Reason
-- Tracking Number
-
----
-
-## 🏗️ Schema Structure
-
-The model follows a **Galaxy / Constellation Schema**, where multiple fact tables share common dimensions.
+Main attributes include:
 
 ```text
-                         ┌──────────────┐
-                         │   dim_date   │
-                         └──────┬───────┘
-                                │
-       ┌────────────────────────┼────────────────────────┐
-       │                        │                        │
-┌──────▼───────┐         ┌──────▼───────┐         ┌──────▼───────┐
-│ dim_customer │         │ dim_product  │         │ dim_supplier │
-└──────┬───────┘         └──────┬───────┘         └──────┬───────┘
-       │                        │                        │
-       └────────────────────────┼────────────────────────┘
-                                │
-                     ┌──────────▼──────────┐
-                     │    Fact Tables     │
-                     └──────────┬──────────┘
-                                │
-          ┌─────────────────────┼─────────────────────┐
-          │          │          │          │          │
-          ▼          ▼          ▼          ▼          ▼
-       Sales     Inventory  Production Procurement Shipment
-          │          │          │          │          │
-          └──────────┴──────────┼──────────┴──────────┘
-                                │
-                       ┌────────▼────────┐
-                       │  dim_facility   │
-                       └─────────────────┘
+facility_id
+facility_name
+facility_type
+country
+city
+specialization
+annual_capacity
 ```
 
 ---
 
-## 🔗 Relationship Design
+# Fact Tables
 
-The model primarily uses:
+## `fact_sales`
 
-- **One-to-many (1:*) relationships**
-- Dimension-to-fact relationships
-- **Single-direction filtering**
+Contains sales transaction data.
 
-General relationship pattern:
+Main fields include:
 
 ```text
-Dimension
-    1
-    │
-    ▼
-Fact
-    *
+sales_id
+order_number
+customer_id
+product_id
+date_key
+quantity_sold
+unit_price
+gross_revenue
+discount
+total_cost
+profit
+profit_margin
 ```
 
-Example:
+Used for:
 
-```text
-dim_product[product_id]
-          1
-          │
-          ▼
-fact_sales[product_id]
-          *
-```
-
-This allows product attributes to filter the related sales records.
+* Revenue
+* Profit
+* Cost
+* Quantity sold
+* Orders
+* Discounts
+* Profitability analysis
 
 ---
 
-## 📅 Multiple Date Roles
+## `fact_inventory`
 
-Some fact tables contain multiple date keys because different dates represent different business events.
+Contains inventory positions by facility and product.
 
-For example, `fact_shipment` contains:
+Main fields include:
 
 ```text
+inventory_id
+date_key
+facility_id
+product_id
+stock_level
+safety_stock_level
+reorder_point
+```
+
+Used for:
+
+* Current stock
+* Safety stock
+* Reorder point
+* Stock buffer
+* Inventory status
+
+---
+
+## `fact_production`
+
+Contains production information.
+
+Main fields include:
+
+```text
+production_id
+batch_number
+date_key
+facility_id
+product_id
+quantity_produced
+defective_units
+defect_rate
+```
+
+Used for:
+
+* Production volume
+* Facility production
+* Product production
+* Defect analysis
+
+---
+
+## `fact_procurement`
+
+Contains procurement transactions.
+
+Main fields include:
+
+```text
+procurement_id
+purchase_order_number
+supplier_id
+product_id
+order_date_key
+delivery_date_key
+order_quantity
+unit_cost
+total_cost
+lead_time_days
+quality_score
+```
+
+Used for:
+
+* Procurement quantity
+* Procurement cost
+* Supplier analysis
+* Lead-time analysis
+* Quality analysis
+
+---
+
+## `fact_shipment`
+
+Contains shipment and delivery information.
+
+Main fields include:
+
+```text
+shipment_id
+customer_id
+product_id
+facility_id
 ship_date_key
 delivery_date_key
+quantity
+shipping_cost
+status
+carrier
+delay_reason
+tracking_number
 ```
 
-The model connects both fields to the Date dimension:
+Used for:
+
+* Shipment volume
+* Delivered shipments
+* On-time delivery
+* Logistics cost
+* Lead-time analysis
+* Shipment status
+
+---
+
+# Model Design
+
+The main design principle is to keep the fact tables focused on their individual business processes while using shared dimensions for analysis.
 
 ```text
-                    dim_date
-                       │
-             ┌─────────┴─────────┐
-             │                   │
-          Active              Inactive
-             │                   │
-             ▼                   ▼
-     ship_date_key       delivery_date_key
-             │                   │
-             └──── fact_shipment ┘
+             Shared Dimensions
+                    │
+        ┌───────────┼───────────┐
+        │           │           │
+        ▼           ▼           ▼
+      Sales     Inventory    Production
+        │           │           │
+        └───────────┼───────────┘
+                    │
+              Procurement
+                    │
+                 Shipment
 ```
 
-The inactive relationship can be activated inside a DAX measure using `USERELATIONSHIP()`.
+The facts are not modeled as a chain of fact-to-fact relationships.
 
-Example:
+Instead, shared dimensions provide the common analytical context.
+
+---
+
+# Grain
+
+The grain of each fact table is defined by its business transaction or recorded operational event.
+
+| Fact               | Analytical grain                                  |
+| ------------------ | ------------------------------------------------- |
+| `fact_sales`       | Sales transaction                                 |
+| `fact_inventory`   | Inventory position by date, facility, and product |
+| `fact_production`  | Production batch/event                            |
+| `fact_procurement` | Procurement transaction                           |
+| `fact_shipment`    | Shipment transaction                              |
+
+Understanding the grain is important when creating measures because aggregations should match the level of detail stored in each fact.
+
+---
+
+# Date Analysis
+
+`dim_date` is used as the common calendar dimension.
+
+Some processes contain more than one date, such as shipment date and delivery date or procurement order date and delivery date.
+
+This allows the report to analyze the same business process from different date perspectives.
+
+For an inactive date relationship, DAX can activate the required relationship using:
 
 ```DAX
-Delivered Shipments =
 CALCULATE(
-    [Total Shipments],
+    [Measure],
     USERELATIONSHIP(
         dim_date[date_key],
-        fact_shipment[delivery_date_key]
+        fact_table[secondary_date_key]
     )
 )
 ```
 
-This allows the same Date dimension to support different business date perspectives.
-
 ---
 
-## 🎯 Why This Model?
+# Summary
 
-The Galaxy Schema allows multiple supply chain processes to be analyzed using shared dimensions.
-
-The main analytical areas are:
+The model provides a common analytical structure for:
 
 ```text
 Supplier
@@ -288,28 +350,11 @@ Inventory
     ↓
 Shipment
     ↓
-Customer / Sales
+Customer
+    ↓
+Sales
+    ↓
+Profitability
 ```
 
-Shared dimensions such as **Date, Product, Facility, Customer, and Supplier** allow users to filter and analyze different business processes consistently across the Power BI report.
-
----
-
-## 📌 Model Summary
-
-| Type | Table |
-|---|---|
-| Dimension | `dim_customer` |
-| Dimension | `dim_supplier` |
-| Dimension | `dim_product` |
-| Dimension | `dim_date` |
-| Dimension | `dim_facility` |
-| Fact | `fact_sales` |
-| Fact | `fact_inventory` |
-| Fact | `fact_production` |
-| Fact | `fact_procurement` |
-| Fact | `fact_shipment` |
-
-**Dimensions:** 5  
-**Fact Tables:** 5  
-**Relationships:** 18
+The business flow above describes the analytical story of the project, while the Power BI model uses shared dimensions to connect the different fact processes.
