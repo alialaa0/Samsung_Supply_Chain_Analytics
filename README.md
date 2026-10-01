@@ -1,12 +1,12 @@
-# 📊 Samsung Supply Chain Analytics
+# Samsung Supply Chain Analytics
 
-A Power BI dashboard for analyzing Samsung's supply chain across **procurement, suppliers, manufacturing, inventory, logistics, sales, customers, and profitability**.
+An end-to-end business intelligence project for analyzing Samsung's supply chain across **procurement, suppliers, manufacturing, inventory, logistics, sales, customers, and profitability**.
 
-Built with **Power BI, DAX, and Figma** to turn supply-chain data into an interactive business analysis.
+The project combines **data modeling, DAX, dashboard design, and business analysis** to build an interactive analytical solution from a multi-fact data model.
 
 ---
 
-## 📸 Dashboard
+## Dashboard Preview
 
 ### 01 — Intro
 
@@ -42,7 +42,7 @@ Built with **Power BI, DAX, and Figma** to turn supply-chain data into an intera
 
 ---
 
-## 🎯 Project Overview
+## Project Overview
 
 The dashboard follows the main supply-chain flow:
 
@@ -64,11 +64,11 @@ Sales
 Profitability
 ```
 
-The main objective is to provide a single view of operational and financial performance while allowing deeper analysis by supplier, facility, product, customer, country, and channel.
+The objective is to provide a single view of operational and financial performance while allowing deeper analysis by supplier, facility, product, customer, country, and channel.
 
 ---
 
-## 🔎 Analysis Areas
+## Analysis Areas
 
 ### Supplier & Procurement
 
@@ -110,9 +110,9 @@ The main objective is to provide a single view of operational and financial perf
 
 ---
 
-## 🧩 Data Model
+## Data Model
 
-The Power BI model uses a **Galaxy Schema / Constellation Schema** with shared dimensions and multiple fact tables.
+The analytical model uses a **Galaxy Schema / Constellation Schema** with shared dimensions and multiple fact tables.
 
 ### Dimensions
 
@@ -134,13 +134,13 @@ fact_procurement
 fact_shipment
 ```
 
-Shared dimensions allow the different business processes to be analyzed consistently across the report.
+Shared dimensions allow the different business processes to be analyzed consistently across the project.
 
 ---
 
-## 📐 DAX & KPIs
+## DAX & KPIs
 
-The dashboard uses reusable DAX measures for the main business KPIs:
+The project uses reusable DAX measures for the main business KPIs:
 
 ```text
 Total Revenue
@@ -169,23 +169,23 @@ Logistics Cost
 Quantity Shipped
 ```
 
-Detailed measure documentation:
+Detailed documentation:
 
-➡️ [`PowerBI/DAX/Measures.md`](PowerBI/DAX/Measures.md)
-
----
-
-## 🛠️ Tools
-
-| Tool            | Purpose                                   |
-| --------------- | ----------------------------------------- |
-| 📊 **Power BI** | Data modeling, DAX, dashboard development |
-| 🧮 **DAX**      | KPI and analytical calculations           |
-| 🎨 **Figma**    | Dashboard design and visual layout        |
+[`PowerBI/DAX/Measures.md`](PowerBI/DAX/Measures.md)
 
 ---
 
-## 📁 Repository Structure
+## Tools
+
+| Tool            | Purpose                                       |
+| --------------- | --------------------------------------------- |
+| 📊 **Power BI** | Data modeling, DAX, and dashboard development |
+| 🧮 **DAX**      | KPI and analytical calculations               |
+| 🎨 **Figma**    | Dashboard design and visual layout            |
+
+---
+
+## Repository Structure
 
 ```text
 Samsung_Supply_Chain_Analytics/
@@ -217,7 +217,7 @@ Samsung_Supply_Chain_Analytics/
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 | Document                                                | Description                        |
 | ------------------------------------------------------- | ---------------------------------- |
@@ -230,16 +230,10 @@ Samsung_Supply_Chain_Analytics/
 
 ---
 
-## 🚀 Project Focus
+## Project Focus
 
-This project focuses on combining:
+The project focuses on combining:
 
 **Data Modeling → DAX → KPI Design → Visualization → Business Analysis**
 
-The goal is to turn supply-chain data into a clear and interactive dashboard that supports both high-level monitoring and detailed analysis.
-
----
-
-### Built with
-
-**Power BI · DAX · Figma**
+The goal is to turn supply-chain data into a clear and interactive analytical solution that supports both high-level monitoring and detailed analysis.
