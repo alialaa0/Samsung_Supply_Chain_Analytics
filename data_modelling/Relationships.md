@@ -1,281 +1,145 @@
-# 🔗 Data Model Relationships
+# Relationships
 
 ## Overview
 
-The Power BI model contains **18 relationships** connecting the five dimension tables with the five fact tables.
+The Power BI model uses dimension-to-fact relationships to connect the different supply-chain processes.
 
-The relationships primarily follow:
-
-- **One-to-many (1:*)** cardinality
-- **Dimension → Fact** filtering direction
-- **Single-direction** filter propagation
-
-General pattern:
+The main relationship pattern is:
 
 ```text
 Dimension
     1
+    │
     │
     ▼
 Fact
     *
 ```
 
----
-
-# 📊 Relationship Map
-
-## 1. Inventory
-
-### Date
-
-```text
-dim_date[date_key]
-       1
-       │
-       ▼
-fact_inventory[date_key]
-       *
-```
-
-### Facility
-
-```text
-dim_facility[facility_id]
-       1
-       │
-       ▼
-fact_inventory[facility_id]
-       *
-```
-
-### Product
-
-```text
-dim_product[product_id]
-       1
-       │
-       ▼
-fact_inventory[product_id]
-       *
-```
+The dimensions provide the filtering context while the fact tables contain the business-process data.
 
 ---
 
-## 2. Procurement
+# Relationship Structure
 
-### Delivery Date
+## Customer Relationships
 
-```text
-dim_date[date_key]
-       1
-       │
-       ▼
-fact_procurement[delivery_date_key]
-       *
-```
-
-### Order Date
+`dim_customer` is used to analyze customer-related activity.
 
 ```text
-dim_date[date_key]
-       1
-       │
-       ▼
-fact_procurement[order_date_key]
-       *
+dim_customer
+     1
+     │
+     ├──────────► fact_sales
+     │
+     └──────────► fact_shipment
 ```
 
-### Product
-
-```text
-dim_product[product_id]
-       1
-       │
-       ▼
-fact_procurement[product_id]
-       *
-```
-
-### Supplier
-
-```text
-dim_supplier[supplier_id]
-       1
-       │
-       ▼
-fact_procurement[supplier_id]
-       *
-```
+This allows sales and shipment activity to be analyzed by customer.
 
 ---
 
-## 3. Production
+## Supplier Relationships
 
-### Date
-
-```text
-dim_date[date_key]
-       1
-       │
-       ▼
-fact_production[date_key]
-       *
-```
-
-### Facility
+`dim_supplier` connects supplier information to procurement activity.
 
 ```text
-dim_facility[facility_id]
-       1
-       │
-       ▼
-fact_production[facility_id]
-       *
+dim_supplier
+     1
+     │
+     └──────────► fact_procurement
 ```
 
-### Product
-
-```text
-dim_product[product_id]
-       1
-       │
-       ▼
-fact_production[product_id]
-       *
-```
+This allows procurement quantity, cost, lead time, and quality to be analyzed by supplier.
 
 ---
 
-## 4. Sales
+## Product Relationships
 
-### Customer
-
-```text
-dim_customer[customer_id]
-       1
-       │
-       ▼
-fact_sales[customer_id]
-       *
-```
-
-### Date
+`dim_product` is a shared dimension across the main supply-chain processes.
 
 ```text
-dim_date[date_key]
-       1
-       │
-       ▼
-fact_sales[date_key]
-       *
+dim_product
+     1
+     │
+     ├──────────► fact_sales
+     ├──────────► fact_inventory
+     ├──────────► fact_production
+     ├──────────► fact_procurement
+     └──────────► fact_shipment
 ```
 
-### Product
-
-```text
-dim_product[product_id]
-       1
-       │
-       ▼
-fact_sales[product_id]
-       *
-```
+This is important because the same product can be analyzed across procurement, production, inventory, shipment, and sales.
 
 ---
 
-## 5. Shipment
+## Facility Relationships
 
-### Customer
-
-```text
-dim_customer[customer_id]
-       1
-       │
-       ▼
-fact_shipment[customer_id]
-       *
-```
-
-### Delivery Date
+`dim_facility` is used across operational processes.
 
 ```text
-dim_date[date_key]
-       1
-       │
-       ▼
-fact_shipment[delivery_date_key]
-       *
+dim_facility
+     1
+     │
+     ├──────────► fact_inventory
+     ├──────────► fact_production
+     └──────────► fact_shipment
 ```
 
-This relationship is **inactive** and is used when analysis needs to be based on the delivery date.
-
-### Facility
-
-```text
-dim_facility[facility_id]
-       1
-       │
-       ▼
-fact_shipment[facility_id]
-       *
-```
-
-### Product
-
-```text
-dim_product[product_id]
-       1
-       │
-       ▼
-fact_shipment[product_id]
-       *
-```
-
-### Ship Date
-
-```text
-dim_date[date_key]
-       1
-       │
-       ▼
-fact_shipment[ship_date_key]
-       *
-```
+This allows facility-level analysis across inventory, manufacturing, and logistics.
 
 ---
 
-# 📅 Date Relationships
+## Date Relationships
 
-The Date dimension plays an important role because several fact tables contain date keys.
-
-Some fact tables contain multiple dates representing different business events.
-
-For `fact_shipment`:
+`dim_date` is the common date dimension.
 
 ```text
-                    dim_date
-                       │
-             ┌─────────┴─────────┐
-             │                   │
-          Active              Inactive
-             │                   │
-             ▼                   ▼
-     ship_date_key       delivery_date_key
-             │                   │
-             └──── fact_shipment ┘
+dim_date
+    1
+    │
+    ├──────────► fact_sales
+    ├──────────► fact_inventory
+    ├──────────► fact_production
+    ├──────────► fact_procurement
+    └──────────► fact_shipment
 ```
 
-The active relationship allows normal filtering using the shipment date.
+The date dimension provides consistent filtering for time-based analysis.
 
-The inactive relationship can be activated inside a measure when analysis needs to be based on the delivery date.
+---
+
+# Multiple Date Roles
+
+Some fact tables contain more than one date key.
+
+For example, shipment data contains:
+
+```text
+ship_date_key
+delivery_date_key
+```
+
+The two dates represent different business events.
+
+Conceptually:
+
+```text
+dim_date[date_key]
+       │
+       ├── Ship Date
+       │
+       └── Delivery Date
+```
+
+The active relationship is used for the normal date analysis, while another date relationship can be activated when the analysis requires it.
 
 Example:
 
 ```DAX
-Delivered Shipments =
+Delivered Analysis =
 CALCULATE(
-    [Total Shipments],
+    [Total Measure],
     USERELATIONSHIP(
         dim_date[date_key],
         fact_shipment[delivery_date_key]
@@ -283,59 +147,151 @@ CALCULATE(
 )
 ```
 
----
-
-# 🧭 Relationship Summary
-
-| # | Dimension | Fact | Key |
-|---:|---|---|---|
-| 1 | `dim_date` | `fact_inventory` | `date_key` |
-| 2 | `dim_facility` | `fact_inventory` | `facility_id` |
-| 3 | `dim_product` | `fact_inventory` | `product_id` |
-| 4 | `dim_date` | `fact_procurement` | `delivery_date_key` |
-| 5 | `dim_date` | `fact_procurement` | `order_date_key` |
-| 6 | `dim_product` | `fact_procurement` | `product_id` |
-| 7 | `dim_supplier` | `fact_procurement` | `supplier_id` |
-| 8 | `dim_date` | `fact_production` | `date_key` |
-| 9 | `dim_facility` | `fact_production` | `facility_id` |
-| 10 | `dim_product` | `fact_production` | `product_id` |
-| 11 | `dim_customer` | `fact_sales` | `customer_id` |
-| 12 | `dim_date` | `fact_sales` | `date_key` |
-| 13 | `dim_product` | `fact_sales` | `product_id` |
-| 14 | `dim_customer` | `fact_shipment` | `customer_id` |
-| 15 | `dim_date` | `fact_shipment` | `delivery_date_key` |
-| 16 | `dim_facility` | `fact_shipment` | `facility_id` |
-| 17 | `dim_product` | `fact_shipment` | `product_id` |
-| 18 | `dim_date` | `fact_shipment` | `ship_date_key` |
+The same approach can be used for other fact tables that contain multiple date roles.
 
 ---
 
-# 🧠 Modeling Principles
+# Filtering Direction
 
-The model follows these principles:
-
-1. **Dimensions filter facts**
-2. Fact tables are not directly connected to each other
-3. Relationships use business keys appropriate to each process
-4. One-to-many relationships are used between dimensions and facts
-5. Single-direction filtering is used to reduce ambiguity
-6. Multiple date roles are handled using active/inactive relationships
-7. `USERELATIONSHIP()` is used when an inactive date relationship is required for a specific measure
-
----
-
-## 📌 Relationship Count
-
-**Total Relationships:** 18
-
-**Dimensions:** 5
-
-**Fact Tables:** 5
-
-**Primary Relationship Pattern:**
+The model follows the standard dimensional-model pattern:
 
 ```text
-Dimension (1)
-      ↓
-Fact (*)
+Dimension
+    ↓
+Fact
 ```
+
+The dimension provides the filter context for the related fact table.
+
+For example:
+
+```text
+dim_product[category]
+        ↓
+fact_sales
+```
+
+Selecting a product category therefore filters the related sales records.
+
+The same principle applies to supplier, customer, facility, and date analysis.
+
+---
+
+# Fact-to-Fact Relationships
+
+The model does not require direct relationships between the fact tables.
+
+For example:
+
+```text
+fact_sales  X  fact_inventory
+fact_sales  X  fact_shipment
+fact_sales  X  fact_procurement
+```
+
+Instead, shared dimensions provide the analytical connection.
+
+Example:
+
+```text
+                 dim_product
+                /     |      \
+               /      |       \
+              ▼       ▼        ▼
+        fact_sales  fact_inventory  fact_production
+```
+
+This keeps the model easier to filter and reduces unnecessary many-to-many relationship problems.
+
+---
+
+# Relationship Design
+
+The relationship design follows these principles:
+
+1. Dimensions provide the analytical context.
+2. Fact tables store business-process events or measurements.
+3. Shared dimensions are reused across processes.
+4. Fact tables are not directly chained together.
+5. Date roles are handled through the date dimension.
+6. Different date roles can be used through inactive relationships and `USERELATIONSHIP()` when required.
+
+---
+
+# Analytical Impact
+
+The relationships allow the dashboard to move from a high-level KPI into the dimensions behind the result.
+
+For example:
+
+```text
+Total Revenue
+      ↓
+Product
+      ↓
+Category
+      ↓
+Customer
+      ↓
+Country
+      ↓
+Channel
+```
+
+Similarly:
+
+```text
+Total Procurement Cost
+      ↓
+Supplier
+      ↓
+Product
+      ↓
+Country
+```
+
+And:
+
+```text
+Total Shipments
+      ↓
+Facility
+      ↓
+Product
+      ↓
+Customer
+      ↓
+Shipment Status
+```
+
+This relationship structure is what allows the report to work as an interactive analytical model rather than a collection of independent charts.
+
+---
+
+# Summary
+
+The model is based on a shared-dimension approach:
+
+```text
+                    dim_customer
+                         │
+dim_supplier ───────┐    │
+                    │    │
+dim_product ────────┤    │
+                    │    │
+dim_date ───────────┤    │
+                    │    │
+dim_facility ───────┘    │
+                         │
+          ┌──────────────┼──────────────┐
+          ▼              ▼              ▼
+      Procurement    Production      Inventory
+          │              │              │
+          └──────────────┼──────────────┘
+                         │
+                      Shipment
+                         │
+                        Sales
+```
+
+The result is a reusable Power BI model where procurement, production, inventory, shipment, customer, and sales analysis can be performed through common dimensions.
