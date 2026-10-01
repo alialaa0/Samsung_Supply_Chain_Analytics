@@ -1,58 +1,150 @@
 # Business Overview
 
-## 1. Executive Summary
+## Project Overview
 
-**Samsung Supply Chain Analytics** is a Power BI business intelligence solution designed to provide a consolidated view of supply-chain performance across procurement, suppliers, manufacturing, inventory, logistics, customers, sales, and profitability.
+I built this Power BI project to analyze a Samsung supply chain from procurement and suppliers through production, inventory, shipments, customers, sales, and profitability.
 
-The solution is structured around a multi-fact analytical model with shared dimensions. This allows decision-makers to move from an executive-level view into specific operational processes without treating each process as an isolated reporting problem.
+The main idea of the project is to bring these areas into one report so I can look at the supply chain from both an operational and business perspective.
 
-The dashboard is designed to answer four core management questions:
+The report is organized into:
 
-1. **Are we buying efficiently?**
-2. **Are we producing and holding inventory effectively?**
-3. **Are we delivering reliably and at an acceptable logistics cost?**
-4. **Are sales and customer activity generating profitable growth?**
+- Supply Chain Overview
+- Supplier & Procurement
+- Inventory & Manufacturing
+- Shipment & Logistics
+- Sales & Customer
+- Sales Performance & Profitability
 
-> **Source of truth:** `Supply Cahin Analysis.pbix`. This document describes the implemented report and semantic model; it does not claim operational processes that are not represented in the PBIX.
-
----
-
-## 2. Business Problem
-
-Supply-chain performance is inherently cross-functional. Procurement decisions affect production availability; production affects inventory; inventory and facility capacity affect shipment execution; shipment performance affects customer service; and sales economics ultimately determine profitability.
-
-A fragmented reporting approach can therefore create several analytical problems:
-
-- Supplier performance is evaluated without connecting it to procurement cost and lead time.
-- Inventory is viewed independently from production and facility capacity.
-- Shipment volume is reviewed without sufficient visibility into delivery performance and logistics cost.
-- Revenue is monitored without simultaneously considering cost, discounting, and profit.
-- Different business processes may use different time perspectives.
-
-The dashboard addresses these problems by bringing the major supply-chain processes into a single analytical model.
+The dashboard was designed in Figma and implemented in Power BI using DAX measures and an analytical data model.
 
 ---
 
-## 3. Analytical Scope
+## Business Problem
 
-The report covers the following business domains.
+Supply-chain performance is not controlled by one department. Supplier performance can affect procurement and production, production affects inventory, inventory and facility operations affect shipments, and the final result appears in customer and sales performance.
 
-| Domain | Primary analytical focus |
-|---|---|
-| Supplier & Procurement | Procurement quantity, procurement cost, supplier quality, supplier lead time |
-| Manufacturing | Production volume, facility performance, product production |
-| Inventory | Stock level, safety stock, reorder point, stock buffer |
-| Shipment & Logistics | Shipment volume, delivery status, on-time delivery, lead time, logistics cost |
-| Sales | Revenue, quantity sold, orders, discounts, cost |
-| Customers | Customer and channel performance |
-| Profitability | Profit, profit margin, product/customer profitability |
-| Time | Trend analysis using the date dimension |
+Because of this, I wanted the dashboard to answer questions such as:
+
+- How much are we procuring and from which suppliers?
+- How are suppliers performing in terms of lead time and quality?
+- How much are we producing across facilities and products?
+- What is the current inventory position compared with safety stock and reorder points?
+- How many shipments are being processed and delivered?
+- How is on-time delivery performing?
+- What are the logistics costs?
+- Which products, customers, countries, and channels contribute to sales and profit?
+- How do discounts, costs, revenue, and profit relate to each other?
 
 ---
 
-## 4. Business Process View
+## Analytical Scope
 
-The analytical story follows the supply-chain lifecycle:
+### Supplier & Procurement
+
+The procurement analysis looks at:
+
+- Supplier
+- Procurement quantity
+- Procurement cost
+- Lead time
+- Quality
+- Product
+- Supplier tier
+- Supplier location
+
+This page helps me compare suppliers using more than one metric instead of looking only at procurement cost.
+
+### Manufacturing
+
+The manufacturing analysis focuses on:
+
+- Production quantity
+- Facility
+- Product
+- Production trends
+- Manufacturing performance
+
+### Inventory
+
+The inventory analysis includes:
+
+- Stock level
+- Safety stock
+- Reorder point
+- Stock buffer
+- Stock status
+- Stock compared with safety stock
+
+This gives a view of where inventory is positioned relative to the thresholds available in the model.
+
+### Shipment & Logistics
+
+The logistics analysis covers:
+
+- Total shipments
+- Delivered shipments
+- On-time delivery
+- Lead time
+- Logistics cost
+- Quantity shipped
+- Shipment status
+- Facility
+- Carrier
+- Delay reason
+
+### Sales & Customers
+
+The sales analysis covers:
+
+- Revenue
+- Profit
+- Cost
+- Quantity sold
+- Orders
+- Discounts
+- Profit margin
+- Customer
+- Country
+- Channel
+- Product and category
+
+---
+
+## Data Model
+
+I used a **Galaxy Schema / Constellation Schema** because the project contains several business processes that share common dimensions.
+
+### Dimensions
+
+```text
+dim_customer
+dim_supplier
+dim_product
+dim_date
+dim_facility
+```
+
+### Fact tables
+
+```text
+fact_sales
+fact_inventory
+fact_production
+fact_procurement
+fact_shipment
+```
+
+The shared dimensions allow the same business entities to be used across different fact tables.
+
+For example, `dim_product` can be used to analyze sales, inventory, production, procurement, and shipments.
+
+The `dim_date` table provides a common time dimension for the model.
+
+---
+
+## Business Process
+
+The business flow represented by the project can be viewed as:
 
 ```text
 Supplier
@@ -72,173 +164,66 @@ Sales
 Profitability
 ```
 
-This is a **business-process view**, not the physical database relationship structure.
-
-The Power BI model uses shared dimensions to analyze different fact processes consistently.
+This is the business flow of the analysis. It is separate from the physical relationships in the Power BI model.
 
 ---
 
-## 5. Management Questions
+## Dashboard Pages
 
-### Procurement & Suppliers
+### 01 — Intro
 
-- Which suppliers contribute the largest procurement volume and cost?
-- How does supplier lead time vary?
-- How does supplier quality compare?
-- Are procurement patterns concentrated among specific suppliers or products?
+Project landing page and introduction.
 
-### Manufacturing
+### 02 — Supply Chain Overview
 
-- Which facilities contribute the most production?
-- Which products drive production volume?
-- How does production activity change over time?
-- Where should operational attention be focused?
+The main overview of supply-chain performance, including financial, operational, inventory, and logistics indicators.
 
-### Inventory
+### 03 — Supplier & Procurement
 
-- What is the current stock position?
-- How does stock compare with safety-stock requirements?
-- Which facilities or products have limited stock buffers?
-- Where could inventory risk require further investigation?
+Analysis of procurement activity and supplier performance.
 
-### Logistics
+### 04 — Inventory & Manufacturing
 
-- How many shipments are being processed?
-- What proportion is delivered on time?
-- What is the average lead time?
-- Which facilities or shipment flows generate the highest logistics cost?
-- What shipment statuses or delay reasons require attention?
+Analysis of production and inventory position across facilities and products.
 
-### Sales & Customers
+### 05 — Shipment & Logistics
 
-- Which products and categories generate revenue and profit?
-- Which customers or channels contribute most to commercial performance?
-- How does profitability vary by country?
-- How much discounting is being applied?
+Analysis of shipment activity, delivery performance, lead time, and logistics cost.
+
+### 06 — Sales & Customer
+
+Analysis of revenue, profit, cost, sales volume, customers, channels, and countries.
+
+### 07 — Sales Performance & Profitability
+
+More detailed analysis of sales, discounts, products, customers, and profitability.
 
 ---
 
-## 6. Analytical Architecture
+## Tools Used
 
-The semantic model follows a **Galaxy Schema / Constellation Schema** approach.
+- **Power BI** — data modeling, DAX, visuals, filters, and dashboard development
+- **DAX** — analytical measures and KPI calculations
+- **Figma** — dashboard design and visual layout
 
-### Dimensions
+---
+
+## Project Goal
+
+The goal of the project is not only to create charts. I wanted to build a dashboard where the data model, KPIs, and visuals work together.
+
+The overall flow is:
 
 ```text
-dim_customer
-dim_supplier
-dim_product
-dim_date
-dim_facility
-```
-
-### Facts
-
-```text
-fact_sales
-fact_inventory
-fact_production
-fact_procurement
-fact_shipment
-```
-
-Conceptually:
-
-```text
-                    dim_customer
-                         │
-                         │
-dim_supplier ───────┐    │
-                    │    │
-dim_product ────────┼────┼────► Fact processes
-                    │    │
-dim_date ───────────┼────┤
-                    │    │
-dim_facility ───────┘    │
-                         │
-          ┌──────────────┼──────────────┐
-          ▼              ▼              ▼
-      Procurement     Production     Inventory
-          │              │              │
-          └──────────────┼──────────────┘
-                         │
-                      Shipment
-                         │
-                       Sales
-```
-
-The important design principle is that **facts are analyzed through conformed dimensions rather than by creating unnecessary fact-to-fact dependencies**.
-
----
-
-## 7. Report Experience
-
-The PBIX contains the following analytical pages:
-
-1. **Intro**
-2. **Overview**
-3. **Supplier & Procurement**
-4. **Inventory & Manufacturer**
-5. **Shipment & Logistics**
-6. **Sales & Customer**
-7. **Sales & Customer 2**
-
-The pages progressively move from broad performance monitoring toward more focused operational and commercial analysis.
-
----
-
-## 8. Decision-Support Flow
-
-A typical analytical workflow is:
-
-```text
-Executive Overview
-       ↓
-Identify performance deviation
-       ↓
-Select business process
-       ↓
-Segment by supplier / facility / product / customer / country
-       ↓
-Investigate operational driver
-       ↓
-Evaluate financial or service impact
-       ↓
-Define follow-up action
-```
-
-The dashboard is therefore intended to support **diagnosis**, not merely KPI display.
-
----
-
-## 9. Technology
-
-The implemented solution uses:
-
-- **Power BI** — semantic modeling, interactive reporting, visualization
-- **DAX** — business measures and analytical calculations
-- **Figma** — dashboard visual/design preparation
-
-No SQL, ETL pipeline, stored procedure, or enterprise data-warehouse implementation is claimed as part of this repository unless separately added and documented.
-
----
-
-## 10. Senior Analytics Perspective
-
-The core value of the project is not the number of visuals. It is the connection between:
-
-```text
-Business Process
-      ↓
 Data Model
-      ↓
-Metric Definition
-      ↓
-Visual Analysis
-      ↓
-Business Interpretation
+    ↓
+DAX Measures
+    ↓
+KPIs
+    ↓
+Interactive Dashboard
+    ↓
+Business Analysis
 ```
 
-A KPI is only useful when its definition, grain, filters, time context, and business meaning are understood.
-
-This project therefore treats the Power BI semantic model as an analytical layer rather than simply a visualization layer.
+This approach makes the report easier to use for both high-level monitoring and detailed analysis.

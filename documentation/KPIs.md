@@ -1,415 +1,307 @@
-# KPI Catalog
+# KPIs
 
-## 1. KPI Governance
+This file documents the main KPIs used in my Samsung Supply Chain Analytics dashboard.
 
-This document defines the principal KPIs used by the Samsung Supply Chain Analytics report.
-
-Each KPI should be interpreted in the context of:
-
-- Its fact-table grain
-- Active report filters
-- Selected date context
-- Product, supplier, facility, customer, and geography dimensions
-- Whether the metric is a volume, cost, service, or profitability measure
-
-> **Important:** KPI values are intentionally not hard-coded in this documentation. Values displayed in Power BI are dynamic and depend on the current filter context.
+The KPI values are dynamic in Power BI and change according to the selected filters, dimensions, and date context.
 
 ---
 
-# 2. Executive KPIs
+## Sales & Profitability
 
-## Total Revenue
+### Total Revenue
 
-**Business definition:** Total revenue generated from sales transactions within the current filter context.
+**Source:** `fact_sales`
 
-**Primary source:** `fact_sales`
+Measures the total revenue represented in the sales data.
 
-**Analytical use:** Measures commercial scale and provides the denominator for profitability ratios.
-
----
-
-## Total Profit
-
-**Business definition:** Total profit generated from sales transactions within the current filter context.
-
-**Primary source:** `fact_sales`
-
-**Analytical use:** Evaluates economic contribution after the modeled sales costs.
+I use this KPI as the main measure of sales value and as the base for profitability analysis.
 
 ---
 
-## Profit Margin
+### Total Profit
 
-**Business definition:** Profit expressed relative to revenue.
+**Source:** `fact_sales`
 
-**Conceptual formula:**
+Measures the total profit represented in the sales data.
+
+I use it together with revenue and cost to understand the financial result of sales activity.
+
+---
+
+### Profit Margin
+
+**Source:** `fact_sales`
+
+Measures profitability relative to revenue.
 
 ```text
-Profit Margin % = Total Profit / Total Revenue
+Profit Margin = Profit / Revenue
 ```
 
-**Analytical use:** Allows profitability to be compared across products, customers, categories, countries, and periods without relying only on absolute profit.
+The exact DAX implementation is maintained in the Power BI model.
 
-**Interpretation caution:** A high margin does not necessarily mean high total profit; volume and revenue scale still matter.
-
----
-
-## Total Cost
-
-**Business definition:** Total modeled sales cost within the current filter context.
-
-**Primary source:** `fact_sales`
-
-**Analytical use:** Provides cost context for revenue and profit analysis.
+This KPI is useful when comparing products, customers, categories, countries, or other segments where total profit alone may not be enough.
 
 ---
 
-# 3. Sales & Customer KPIs
+### Total Cost
 
-## Total Quantity Sold
+**Source:** `fact_sales`
 
-**Business definition:** Total quantity recorded as sold.
+Measures the total sales cost represented in the model.
 
-**Primary source:** `fact_sales`
-
-**Analytical use:** Measures sales volume and supports volume-versus-value analysis.
+I use it with revenue and profit to understand the financial performance of sales.
 
 ---
 
-## Total Orders
+### Total Quantity Sold
 
-**Business definition:** Number of sales orders represented in the report's sales data.
+**Source:** `fact_sales`
 
-**Primary source:** `fact_sales`
+Measures the quantity sold.
 
-**Analytical use:** Provides order-volume context alongside revenue and quantity.
-
----
-
-## Average Discount %
-
-**Business definition:** Average discount percentage represented in the sales transactions under the current filter context.
-
-**Analytical use:** Helps evaluate discounting behavior alongside revenue and profitability.
-
-**Interpretation caution:** An average discount percentage should not automatically be interpreted as the weighted commercial discount unless the underlying measure explicitly uses a revenue/quantity-weighted calculation.
+It provides the volume perspective alongside revenue and profit.
 
 ---
 
-## Total Discount Amount
+### Total Orders
 
-**Business definition:** Total modeled discount amount applied to sales.
+**Source:** `fact_sales`
 
-**Analytical use:** Quantifies the commercial value of discounts and should be interpreted alongside revenue, volume, and margin.
+Measures the order activity represented in the sales data.
 
----
-
-# 4. Procurement KPIs
-
-## Total Procurement Quantity
-
-**Business definition:** Total quantity procured within the current filter context.
-
-**Primary source:** `fact_procurement`
-
-**Analytical use:** Measures purchasing volume across suppliers, products, and time.
+I use it with quantity and revenue to understand sales volume and order performance.
 
 ---
 
-## Total Procurement Cost
+### Average Discount %
 
-**Business definition:** Total procurement cost represented by procurement transactions.
+**Source:** `fact_sales`
 
-**Primary source:** `fact_procurement`
+Measures the average discount percentage used in the sales data.
 
-**Analytical use:** Quantifies purchasing expenditure and supports supplier/product cost analysis.
-
----
-
-## Average Lead Time
-
-**Business definition:** Average lead time represented in the relevant process under the current filter context.
-
-**Primary source:** Procurement and shipment analysis depending on the visual/measure.
-
-**Analytical use:** Measures time performance and supports supplier or logistics diagnosis.
-
-**Interpretation caution:** Procurement lead time and shipment/delivery lead time are different business concepts. They should not be combined unless the metric explicitly defines them as such.
+I use this KPI to review discounting together with revenue, profit, and margin.
 
 ---
 
-## Average Quality
+### Total Discount Amount
 
-**Business definition:** Average supplier/product quality score represented in procurement data.
+**Source:** `fact_sales`
 
-**Primary source:** `fact_procurement` and supplier attributes.
+Measures the total discount amount represented in sales transactions.
 
-**Analytical use:** Supports supplier-quality comparison.
-
----
-
-# 5. Production KPIs
-
-## Total Quantity Produced
-
-**Business definition:** Total production quantity recorded in the manufacturing fact table.
-
-**Primary source:** `fact_production`
-
-**Analytical use:** Measures manufacturing output by facility, product, and time.
+This gives the value perspective of discounting rather than only the percentage.
 
 ---
 
-## Defect Rate
+## Procurement
 
-**Business definition:** Proportion of defective production units relative to total production.
+### Total Procurement Quantity
 
-**Primary source:** `fact_production`
+**Source:** `fact_procurement`
 
-**Analytical use:** Provides a quality-performance perspective for manufacturing.
+Measures the total quantity procured.
 
-**Interpretation caution:** A defect rate should be considered together with production volume. A low rate on very small production volume may not represent the same operational significance as a similar rate at high volume.
-
----
-
-# 6. Inventory KPIs
-
-## Current Stock
-
-**Business definition:** Stock level represented in the inventory data under the current filter context.
-
-**Primary source:** `fact_inventory`
-
-**Analytical use:** Measures inventory position.
+I use it to compare procurement activity across suppliers, products, and time.
 
 ---
 
-## Safety Stock
+### Total Procurement Cost
 
-**Business definition:** Target buffer stock level represented by the inventory model.
+**Source:** `fact_procurement`
 
-**Primary source:** `fact_inventory`
+Measures the procurement cost represented in the model.
 
-**Analytical use:** Provides a benchmark against which current stock can be evaluated.
-
----
-
-## Reorder Point
-
-**Business definition:** Stock threshold represented in the inventory model at which replenishment may be required.
-
-**Primary source:** `fact_inventory`
-
-**Analytical use:** Supports inventory replenishment analysis.
+This is used to analyze purchasing expenditure across suppliers and products.
 
 ---
 
-## Stock Buffer
+### Average Lead Time
 
-**Business definition:** Difference between the current stock position and the relevant safety-stock level.
+**Source:** `fact_procurement`
 
-**Conceptual interpretation:**
+Measures the average procurement lead time represented in the model.
+
+I use this KPI mainly in the Supplier & Procurement analysis to compare supplier performance.
+
+---
+
+### Average Quality
+
+**Source:** `fact_procurement`
+
+Represents the average quality information available in the procurement data.
+
+It is used together with procurement quantity, cost, and lead time when reviewing suppliers.
+
+---
+
+## Manufacturing
+
+### Total Quantity Produced
+
+**Source:** `fact_production`
+
+Measures total production quantity.
+
+I use it to compare production activity across facilities, products, and time.
+
+---
+
+### Defect Rate
+
+**Source:** `fact_production`
+
+Represents the defect rate available in the production data.
+
+It provides a quality perspective alongside production quantity.
+
+---
+
+## Inventory
+
+### Safety Stock
+
+**Source:** `fact_inventory`
+
+Represents the safety-stock level in the inventory data.
+
+I use it as a reference point when reviewing current stock.
+
+---
+
+### Reorder Point
+
+**Source:** `fact_inventory`
+
+Represents the reorder point available in the inventory model.
+
+It provides another inventory threshold for analysis.
+
+---
+
+### Stock Buffer
+
+**Source:** `fact_inventory`
+
+Measures the stock-buffer position used in the dashboard.
+
+I use it to understand the difference between the current stock position and the relevant inventory reference level.
+
+---
+
+### Stock vs Safety %
+
+**Source:** `fact_inventory`
+
+Compares the stock position with safety stock.
+
+This KPI helps identify inventory positions that are above or below the safety-stock reference.
+
+---
+
+### Stock Status
+
+**Source:** `fact_inventory`
+
+Provides the inventory status used in the dashboard.
+
+I use this classification in the inventory analysis to make the stock position easier to review at facility level.
+
+---
+
+## Shipment & Logistics
+
+### Total Shipments
+
+**Source:** `fact_shipment`
+
+Measures the total shipment records represented in the model.
+
+---
+
+### Delivered Shipments
+
+**Source:** `fact_shipment`
+
+Measures shipments classified as delivered in the shipment data.
+
+---
+
+### On-Time Delivery %
+
+**Source:** `fact_shipment`
+
+Measures the on-time delivery performance represented in the dashboard.
+
+I use it as the main service-performance KPI in the Shipment & Logistics page.
+
+---
+
+### Total Logistics Cost
+
+**Source:** `fact_shipment`
+
+Measures the logistics cost represented in shipment transactions.
+
+I use it to compare logistics expenditure across facilities and other available dimensions.
+
+---
+
+### Total Quantity Shipped
+
+**Source:** `fact_shipment`
+
+Measures the quantity represented by shipment transactions.
+
+It provides the shipment-volume perspective alongside shipment count and logistics cost.
+
+---
+
+## KPI Usage
+
+I do not use the KPIs independently.
+
+For example:
 
 ```text
-Stock Buffer = Stock Level - Safety Stock
+Revenue
+   +
+Cost
+   +
+Profit
+   +
+Profit Margin
 ```
 
-A positive buffer indicates stock above safety stock; a negative buffer indicates stock below safety stock.
+gives a better view of sales performance than revenue alone.
 
-**Analytical use:** Identifies inventory positions requiring investigation.
-
----
-
-## Stock vs Safety %
-
-**Business definition:** Current stock expressed relative to safety stock.
-
-**Conceptual formula:**
+For logistics:
 
 ```text
-Stock vs Safety % = Stock Level / Safety Stock
-```
-
-**Interpretation:**
-
-- Below 100% → stock is below safety stock
-- Around 100% → stock is approximately at safety stock
-- Above 100% → stock exceeds safety stock
-
-**Interpretation caution:** This is an inventory-position indicator, not a direct service-level probability.
-
----
-
-## Stock Status
-
-The report includes a `Stock Status` measure used to classify inventory positions.
-
-The status should be interpreted as a **screening indicator** rather than a complete inventory-optimization decision. Further investigation may require demand, forecast, supplier lead time, and replenishment-cycle information.
-
----
-
-# 7. Shipment & Logistics KPIs
-
-## Total Shipments
-
-**Business definition:** Number of shipment records represented in the shipment fact table.
-
-**Primary source:** `fact_shipment`
-
-**Analytical use:** Measures logistics activity.
-
----
-
-## Delivered Shipments
-
-**Business definition:** Shipment records classified as delivered under the report's shipment status logic.
-
-**Primary source:** `fact_shipment`
-
-**Analytical use:** Measures completed delivery activity.
-
----
-
-## On-Time Delivery %
-
-**Business definition:** Proportion of relevant shipments delivered on time according to the report's on-time delivery logic.
-
-**Analytical use:** Measures logistics service performance.
-
-**Interpretation caution:** The exact business definition of "on time" must be kept consistent with the implemented DAX logic and available delivery-date/status fields.
-
----
-
-## Average Lead Time
-
-**Business definition:** Average elapsed lead time for the relevant logistics/procurement process.
-
-**Analytical use:** Supports service-level and operational-efficiency analysis.
-
-**Important:** Lead time must always be interpreted with its process definition and date role.
-
----
-
-## Total Logistics Cost
-
-**Business definition:** Total shipping/logistics cost represented in shipment records.
-
-**Primary source:** `fact_shipment`
-
-**Analytical use:** Quantifies logistics expenditure and supports cost-per-volume investigations.
-
----
-
-## Total Quantity Shipped
-
-**Business definition:** Total quantity represented by shipment transactions.
-
-**Primary source:** `fact_shipment`
-
-**Analytical use:** Measures logistics volume.
-
----
-
-## Total Quantity Delivered
-
-**Business definition:** Quantity associated with delivered shipments under the report's delivery logic.
-
-**Primary source:** `fact_shipment`
-
-**Analytical use:** Provides delivered-volume context alongside shipment count and on-time performance.
-
----
-
-# 8. KPI Interpretation Framework
-
-A senior analytical review should avoid evaluating KPIs independently.
-
-### Cost
-
-```text
-Procurement Cost
-       +
-Logistics Cost
-       +
-Sales Cost
-```
-
-should be considered in relation to:
-
-```text
-Revenue → Profit → Profit Margin
-```
-
-### Service
-
-```text
-Shipment Volume
-       +
+Shipments
+   +
 Delivered Shipments
-       +
+   +
 On-Time Delivery %
-       +
+   +
 Lead Time
+   +
+Logistics Cost
 ```
 
-should be considered together rather than treating delivery percentage as the only logistics KPI.
+provides a broader view of delivery performance.
 
-### Inventory
+For inventory:
 
 ```text
-Stock Level
-       +
+Stock
+   +
 Safety Stock
-       +
+   +
 Reorder Point
-       +
+   +
 Stock Buffer
 ```
 
-should be evaluated alongside production, procurement, and demand context.
-
-### Supplier
-
-```text
-Procurement Volume
-       +
-Procurement Cost
-       +
-Lead Time
-       +
-Quality
-```
-
-should be considered together to avoid selecting suppliers based on a single metric.
-
----
-
-# 9. KPI Design Principles
-
-The report follows several important BI principles:
-
-1. **Use measures for dynamic business calculations.**
-2. **Keep KPI definitions consistent across pages.**
-3. **Separate operational volume from financial value.**
-4. **Use ratios with appropriate denominators.**
-5. **Interpret absolute and relative metrics together.**
-6. **Preserve date context when comparing periods.**
-7. **Avoid treating correlation as causation.**
-8. **Investigate KPI exceptions at the lowest useful business grain.**
-
----
-
-# 10. Metric Quality Checklist
-
-Before publishing or extending the report, validate:
-
-- [ ] Numerator and denominator are defined.
-- [ ] Fact-table grain is known.
-- [ ] Date relationship is appropriate.
-- [ ] Filters behave as intended.
-- [ ] Zero/blank cases are handled.
-- [ ] Percentages use appropriate formatting.
-- [ ] Currency metrics use consistent currency assumptions.
-- [ ] Counts do not unintentionally duplicate entities.
-- [ ] KPI labels match the underlying DAX logic.
-- [ ] Business definitions are documented independently from visual titles.
+helps me review the inventory position using the thresholds available in the model.
